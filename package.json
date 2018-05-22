@@ -1,0 +1,32 @@
+{
+  "name": "pwagram",
+  "version": "1.0.0",
+  "description": "This source code is part of Maximilian Schwarzmüller's \"Progressive Web Apps - Complete Guide\" course on udemy.com.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mornir/PWAgram.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mornir/PWAgram/issues"
+  },
+  "homepage": "https://github.com/mornir/PWAgram#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "http-server": "^0.11.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0"
+  }
+}

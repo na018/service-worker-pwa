@@ -1,0 +1,54 @@
+#create-post {
+  z-index: 1001;
+  position: fixed;
+  width: 100%;
+  height: 0;
+  overflow-y: scroll;
+  bottom: 0;
+  top: 56px;
+  background: white;
+  text-align: center;
+  transition: .5s;
+  min-height: 100vh;
+  transform: translateY(100vh);
+}
+
+.main-image {
+  max-width: 100%;
+  margin: auto;
+  display: block;
+}
+
+.floating-button {
+  z-index: 1000;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 30px;
+}
+
+.input-section {
+  display: block;
+  margin: 10px auto;
+}
+
+.shared-moment-card.mdl-card {
+  margin: 10px auto;
+}
+.test{
+  color:red;
+}
+#shared-moments{
+  max-width:1200px;
+  .shared-moment-card{
+    min-width:350px;
+
+    .deleteBtn {
+      float: right;
+      i{
+        font-size: 20px;
+        color: #f75858ab;
+      }
+    }
+  }
+}

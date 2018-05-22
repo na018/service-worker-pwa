@@ -1,0 +1,32 @@
+.text-center {
+  text-align: center; }
+
+.drawer-option {
+  padding: 16px; }
+
+button.black.mdl-button--fab {
+  background: black; }
+
+button.white.mdl-button--fab {
+  background: white; }
+
+button.grey.mdl-button--fab {
+  background: lightgrey; }
+
+button.blue.mdl-button--fab {
+  background: radial-gradient(#7c61ff, #004df9);
+  color: white; }
+
+#shared-moments span.card-title {
+  color: white;
+  padding: 3px 20px;
+  background: #635959;
+  line-height: 2; }
+#shared-moments div.mdl-card__title {
+  box-shadow: inset 0 0 1px grey; }
+
+.header-img {
+  background: grey;
+  box-shadow: 0 0 3px grey; }
+
+/*# sourceMappingURL=app2.css.map */
