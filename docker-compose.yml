@@ -1,0 +1,14 @@
+version: '2'
+services:
+  web:
+    build: .
+    environment:
+      - PORT=8080
+    command: npm start
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "3535:3535"
+      - "8080:8080"
+      
