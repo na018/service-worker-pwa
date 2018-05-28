@@ -48,6 +48,13 @@ function displayPermissionGranted() {
   var opts = {
     body: 'Successfully installed notifications!'
   };
+  //check that sw is available
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(function(sweg) {
+        sweg.showNotification('Permissions for notifications through SW granted!', opts);
+      });
+  }
+
   new Notification('Permissions for notifications granted!', opts);
 }
 
