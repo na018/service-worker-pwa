@@ -1,4 +1,5 @@
 var deferredPrompt
+var enableNotiButton = document.querySelectorAll('.enable-notifications');
 
 // if browser has not implemented Promise polyfill
 if (!window.Promise) {
@@ -27,6 +28,28 @@ var promise = new Promise(function (resolve, reject) {
   }, 3000)
 
 })
+
+//ask for user permissions for notifications
+function askForPermNotis() {
+  Notification.requestPermission(function(result) {
+    console.log ('User Choice', result);
+    if (result !== 'granted') {
+      console.log('No permissions for notifications granted');
+    } else {
+      console.log('Permissions for notifications granted!');
+
+    }
+
+  });
+}
+
+//check if the browser support Notifications and make button visible
+if ('Notification' in window) {
+  for (var i = 0; i< enableNotiButton.length; i++){
+    enableNotiButton[i].style.display = 'inline-block';
+    enableNotiButton[i].addEventListener('click', askForPermNotis);
+  }
+}
 /*
  traditional requests cant be used with ServiceWorkers -> only fetch API
  var xhr = new XMLHttpRequest()
@@ -73,4 +96,3 @@ fetch('http://httpbin.org/post', {
     console.log(err)
   })
 */
-
