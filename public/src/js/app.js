@@ -37,10 +37,18 @@ function askForPermNotis() {
       console.log('No permissions for notifications granted');
     } else {
       console.log('Permissions for notifications granted!');
-
+      displayPermissionGranted();
     }
 
   });
+}
+
+//show the user that permissions for notifications are now granted
+function displayPermissionGranted() {
+  var opts = {
+    body: 'Successfully installed notifications!'
+  };
+  new Notification('Permissions for notifications granted!', opts);
 }
 
 //check if the browser support Notifications and make button visible
