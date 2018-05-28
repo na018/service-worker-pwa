@@ -6,4 +6,8 @@
 ````
 // run code
 node server.js
+
+// if you want to use npm in docker you need dockerCE and docker-compose for mac
+// simply execute in shell:
+./start.sh 
 ````
