@@ -29,6 +29,8 @@ var promise = new Promise(function (resolve, reject) {
 
 })
 
+
+
 //ask for user permissions for notifications
 function askForPermNotis() {
   Notification.requestPermission(function(result) {
@@ -45,17 +47,41 @@ function askForPermNotis() {
 
 //show the user that permissions for notifications are now granted
 function displayPermissionGranted() {
-  var opts = {
-    body: 'Successfully installed notifications!'
-  };
   //check that sw is available
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(function(sweg) {
+    var opts = {
+      body: 'Successfully installed notifications!',
+      icon: '/src/images/icons/app-icon-96x96.png',
+      image: '/src/images/sf-boat.jpg',
+      lang: 'en-US',
+      vibrate: [100,50,200],
+      badge: '/src/images/icons/app-icon-96x96.png',
+      tag: 'confirm-notification',
+      renotify: true,
+      actions: [
+        { action: 'confirm', title: 'Yep', icon: '/src/images/icons/app-icon-96x96.png' },
+        { action: 'cancel', title: 'Nope', icon: '/src/images/icons/app-icon-96x96.png' }
+      ]
+    };
+
+    navigator.serviceWorker.ready
+    .then(function(sweg) {
         sweg.showNotification('Permissions for notifications through SW granted!', opts);
       });
   }
 
-  new Notification('Permissions for notifications granted!', opts);
+  self.addEventListener('notificationclick', function(event) {
+    var  notification = event.notification;
+    var action = event.action;
+    console.log('addEventListener called');
+    console.log(notification);
+    if (action === 'confirm') {
+      console.log('confirmed');
+      notification.close();
+    } else {
+      console.log(action);
+    }
+  });
 }
 
 //check if the browser support Notifications and make button visible
@@ -65,6 +91,10 @@ if ('Notification' in window) {
     enableNotiButton[i].addEventListener('click', askForPermNotis);
   }
 }
+
+
+
+
 /*
  traditional requests cant be used with ServiceWorkers -> only fetch API
  var xhr = new XMLHttpRequest()

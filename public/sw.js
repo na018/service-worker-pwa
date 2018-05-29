@@ -74,7 +74,7 @@ function isInArr(string, arr) {
     if (string === arr[i]) {
       // console.log('--. is equal --.`', arr[i], string)
       return true;
-    } 
+    }
   }
   // console.log('--. is not equal --.`', arr[i], string)
   return false
@@ -197,6 +197,20 @@ self.addEventListener('sync', function (event) {
     )
   }
 })
+
+self.addEventListener('notificationclick', function(event) {
+  var  notification = event.notification;
+  var action = event.action;
+  console.log('addEventListener called');
+  console.log(notification);
+  if (action === 'confirm') {
+    console.log('confirmed');
+    notification.close();
+  } else {
+    console.log(action);
+  }
+});
+
 // network first then cache
 /*self.addEventListener('fetch', function (event) {
  //console.log('[Service Worker] fetches something ...', event)
