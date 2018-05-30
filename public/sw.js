@@ -2,8 +2,8 @@ importScripts('/src/js/idb.js')
 importScripts('/src/js/utility.js')
 /*importScripts('/src/js/utility.js')*/
 
-let CACHE_STATIC_NAME = 'static-v1'
-let CACHE_DYNAMIC_NAME = 'dynamic-v1'
+let CACHE_STATIC_NAME = 'static-v2'
+let CACHE_DYNAMIC_NAME = 'dynamic-v2'
 var STATIC_FILES =
   ['/',
     '/index.html',
@@ -204,13 +204,19 @@ self.addEventListener('notificationclick', function(event) {
   console.log('addEventListener called');
   console.log(notification);
   if (action === 'confirm') {
-    console.log('confirmed');
+    console.log('confirmed ');
     notification.close();
   } else {
     console.log(action);
+    notification.close();
+
   }
 });
 
+self.addEventListener('notificationclose', function(event) {
+   console.log('notification was closed',event);
+
+ });
 // network first then cache
 /*self.addEventListener('fetch', function (event) {
  //console.log('[Service Worker] fetches something ...', event)

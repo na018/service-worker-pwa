@@ -44,7 +44,13 @@ function askForPermNotis() {
 
   });
 }
-
+//check if the browser support Notifications and make button visible
+if ('Notification' in window) {
+  for (var i = 0; i< enableNotiButton.length; i++){
+    enableNotiButton[i].style.display = 'inline-block';
+    enableNotiButton[i].addEventListener('click', askForPermNotis);
+  }
+}
 //show the user that permissions for notifications are now granted
 function displayPermissionGranted() {
   //check that sw is available
@@ -70,27 +76,9 @@ function displayPermissionGranted() {
       });
   }
 
-  self.addEventListener('notificationclick', function(event) {
-    var  notification = event.notification;
-    var action = event.action;
-    console.log('addEventListener called');
-    console.log(notification);
-    if (action === 'confirm') {
-      console.log('confirmed');
-      notification.close();
-    } else {
-      console.log(action);
-    }
-  });
 }
 
-//check if the browser support Notifications and make button visible
-if ('Notification' in window) {
-  for (var i = 0; i< enableNotiButton.length; i++){
-    enableNotiButton[i].style.display = 'inline-block';
-    enableNotiButton[i].addEventListener('click', askForPermNotis);
-  }
-}
+
 
 
 
