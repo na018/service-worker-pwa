@@ -39,13 +39,14 @@ function askForPermNotis() {
       console.log('No permissions for notifications granted');
     } else {
       console.log('Permissions for notifications granted!');
-      displayPermissionGranted();
+      configurePushSub();
+      //displayPermissionGranted();
     }
 
   });
 }
 //check if the browser support Notifications and make button visible
-if ('Notification' in window) {
+if ('Notification' in window && 'serviceWorker' in navigator) {
   for (var i = 0; i< enableNotiButton.length; i++){
     enableNotiButton[i].style.display = 'inline-block';
     enableNotiButton[i].addEventListener('click', askForPermNotis);
@@ -78,7 +79,26 @@ function displayPermissionGranted() {
 
 }
 
-
+function configurePushSub() {
+  if (!('serviceWorker' in navigator)) {
+    return;
+  }
+  navigator.serviceWorker.ready
+    .then(function(swreg) {
+      reg = swreg;
+      swreg.pushManager.getSubscription();
+    })
+    .then(function(sub){
+      if (sub === null) {
+        //we need to create a subscription
+        reg.pushManager.subscribe({
+          userVisibleOnly: true 
+        });
+      } else {
+        // subscription already there!
+      }
+    });
+}
 
 
 
