@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "predeploy": [
+    ]
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "pk.json",
+      "server.js",
+      "start.sh",
+      "keys.txt",
+      "Dockerfile",
+      "docker-compose.yml"
+    ]
+  }
+}

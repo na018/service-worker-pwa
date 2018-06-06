@@ -9,5 +9,6 @@ node server.js
 
 // if you want to use npm in docker you need dockerCE and docker-compose for mac
 // simply execute in shell:
-./start.sh 
+./start.sh and follow the menu! (if you need to remove a container see docker documentation!)
 ````
+!Beware the Firebase API-Key and the notification-vapidkeys are not stored in the git repo!

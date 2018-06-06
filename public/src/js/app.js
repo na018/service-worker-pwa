@@ -73,7 +73,7 @@ function displayPermissionGranted() {
 
     navigator.serviceWorker.ready
     .then(function(sweg) {
-        sweg.showNotification('Permissions for notifications through SW granted!', opts);
+        sweg.showNotification('Permissions for notifications granted!', opts);
       });
   }
 
@@ -88,16 +88,38 @@ function configurePushSub() {
       reg = swreg;
       swreg.pushManager.getSubscription();
     })
-    .then(function(sub){
+    .then(function(sub) {
       if (sub === null) {
         //we need to create a subscription
-        reg.pushManager.subscribe({
-          userVisibleOnly: true 
+        var pubkey = 'BDui3XmS-VxBFTLMxLK3GPgW0BIdJSVlvXQR-6v--kHisyNz2Os2hOZUVPIyrljgQ7CbZBAsNov1oUX9AsYVOLw';
+        var convertedkey = urlB64ToUint8Array(pubkey);
+        return reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: convertedkey
         });
       } else {
         // subscription already there!
       }
-    });
+    })
+     .then(function(newSub) {
+       return fetch('https://serviceworker-f7f4f.firebaseio.com/subscriptions.json', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+           'Accept': 'application/json'
+         },
+         body: JSON.stringify(newSub)
+       })
+     })
+     .then(function(res) {
+      if (res.ok) {
+        console.log('success OK');
+        displayPermissionGranted();
+      }
+     })
+     .catch(function(err) {
+       console.log(err);
+     });
 }
 
 

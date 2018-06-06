@@ -1,1 +1,6 @@
 keys.txt
+npm-debug.log
+pk.json
+functions/pk.json
+functions/*
+.firebaserc
