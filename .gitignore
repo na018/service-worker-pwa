@@ -4,3 +4,4 @@ pk.json
 functions/pk.json
 functions/*
 .firebaserc
+.DS_Store
