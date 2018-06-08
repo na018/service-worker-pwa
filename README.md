@@ -12,3 +12,4 @@ node server.js
 ./start.sh and follow the menu! (if you need to remove a container see docker documentation!)
 ````
 !Beware the Firebase API-Key and the notification-vapidkeys are not stored in the git repo!
+!To store new subscriptions in Firebase you have to adjust the rules to write "true" of the realtimedatabase!
