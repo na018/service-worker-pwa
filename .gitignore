@@ -2,6 +2,7 @@ keys.txt
 npm-debug.log
 pk.json
 functions/pk.json
-functions/*
+functions/etc/*
+functions/node_modules
 .firebaserc
 .DS_Store
