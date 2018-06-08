@@ -217,6 +217,29 @@ self.addEventListener('notificationclose', function(event) {
    console.log('notification was closed',event);
 
  });
+
+ self.addEventListener('push', function(event) {
+   console.log('Push Notification received', event);
+
+   var data = {title: 'New!', content: 'Something new happened!', openUrl: '/'};
+
+   if (event.data) {
+     data = JSON.parse(event.data.text());
+   }
+
+   var options = {
+     body: data.content,
+     icon: '/src/images/icons/app-icon-96x96.png',
+     badge: '/src/images/icons/app-icon-96x96.png',
+     data: {
+       url: data.openUrl
+     }
+   };
+
+   event.waitUntil(
+     self.registration.showNotification(data.title, options)
+   );
+ });
 // network first then cache
 /*self.addEventListener('fetch', function (event) {
  //console.log('[Service Worker] fetches something ...', event)
