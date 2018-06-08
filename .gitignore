@@ -1,0 +1,8 @@
+keys.txt
+npm-debug.log
+pk.json
+functions/pk.json
+functions/etc/*
+functions/node_modules
+.firebaserc
+.DS_Store

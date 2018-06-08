@@ -2,8 +2,8 @@ importScripts('/src/js/idb.js')
 importScripts('/src/js/utility.js')
 /*importScripts('/src/js/utility.js')*/
 
-let CACHE_STATIC_NAME = 'static-v1'
-let CACHE_DYNAMIC_NAME = 'dynamic-v1'
+let CACHE_STATIC_NAME = 'static-v2'
+let CACHE_DYNAMIC_NAME = 'dynamic-v2'
 var STATIC_FILES =
   ['/',
     '/index.html',
@@ -74,7 +74,7 @@ function isInArr(string, arr) {
     if (string === arr[i]) {
       // console.log('--. is equal --.`', arr[i], string)
       return true;
-    } 
+    }
   }
   // console.log('--. is not equal --.`', arr[i], string)
   return false
@@ -197,6 +197,49 @@ self.addEventListener('sync', function (event) {
     )
   }
 })
+
+self.addEventListener('notificationclick', function(event) {
+  var  notification = event.notification;
+  var action = event.action;
+  console.log('addEventListener called');
+  console.log(notification);
+  if (action === 'confirm') {
+    console.log('confirmed ');
+    notification.close();
+  } else {
+    console.log(action);
+    notification.close();
+
+  }
+});
+
+self.addEventListener('notificationclose', function(event) {
+   console.log('notification was closed',event);
+
+ });
+
+ self.addEventListener('push', function(event) {
+   console.log('Push Notification received', event);
+
+   var data = {title: 'New!', content: 'Something new happened!', openUrl: '/'};
+
+   if (event.data) {
+     data = JSON.parse(event.data.text());
+   }
+
+   var options = {
+     body: data.content,
+     icon: '/src/images/icons/app-icon-96x96.png',
+     badge: '/src/images/icons/app-icon-96x96.png',
+     data: {
+       url: data.openUrl
+     }
+   };
+
+   event.waitUntil(
+     self.registration.showNotification(data.title, options)
+   );
+ });
 // network first then cache
 /*self.addEventListener('fetch', function (event) {
  //console.log('[Service Worker] fetches something ...', event)
