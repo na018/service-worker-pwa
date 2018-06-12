@@ -198,21 +198,49 @@ self.addEventListener('sync', function (event) {
   }
 })
 
+// self.addEventListener('notificationclick', function(event) {
+//   var  notification = event.notification;
+//   var action = event.action;
+//   console.log('addEventListener called');
+//   console.log(notification);
+//   if (action === 'confirm') {
+//     console.log('confirmed ');
+//     notification.close();
+//   } else {
+//     console.log(action);
+//     notification.close();
+//
+//   }
+// });
 self.addEventListener('notificationclick', function(event) {
-  var  notification = event.notification;
+  var notification = event.notification;
   var action = event.action;
-  console.log('addEventListener called');
+
   console.log(notification);
+
   if (action === 'confirm') {
-    console.log('confirmed ');
+    console.log('Confirm was chosen');
     notification.close();
   } else {
     console.log(action);
-    notification.close();
+    event.waitUntil(
+      clients.matchAll()
+        .then(function(clis) {
+          var client = clis.find(function(c) {
+            return c.visibilityState === 'visible';
+          });
 
+          if (client !== undefined) {
+            client.navigate(notification.data.url);
+            client.focus();
+          } else {
+            clients.openWindow(notification.data.url);
+          }
+          notification.close();
+        })
+    );
   }
 });
-
 self.addEventListener('notificationclose', function(event) {
    console.log('notification was closed',event);
 
