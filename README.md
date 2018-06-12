@@ -13,3 +13,5 @@ node server.js
 ````
 !Beware the Firebase API-Key and the notification-vapidkeys are not stored in the git repo!
 !To store new subscriptions in Firebase you have to adjust the rules to write "true" of the realtimedatabase!
+
+I added the vapid key into the github repo. As this is a test application we could ignore this case. Only demousers are susbcribed for test purposes. 
