@@ -9,7 +9,7 @@ const snackBar = document.getElementById('confirmation-toast')
 const imgContainer = createPostArea.querySelector('#manual-image')
 const uploadFile = imgContainer.querySelector('#imgPath-input')
 const imgInput = imgContainer.querySelector('#imgPath')
-let postImg = 'gs://serviceworker-f7f4f.appspot.com/peach_small_1.jpg'
+let postImg = null //'gs://serviceworker-f7f4f.appspot.com/peach_small_1.jpg'
 
 function openCreatePostModal() {
   createPostArea.style.transform = 'translateY(0)'
@@ -217,11 +217,24 @@ function deleteCard(e,card) {
 function sendData() {
 
   let id = Date.now()
+  let img = () => {
+    if(!postImg) {
+      if(!imgInput.value){
+        return 'https://firebasestorage.googleapis.com/v0/b/serviceworker-f7f4f.appspot.com/o/posts%2Fprincess.png?alt=media&token=22faf762-1fea-4551-b6c4-70061b041d81'
+      }else{
+        return imgInput.value
+      }
+    }else {
+      return postImg
+    }
+
+  }
+  console.log(img())
   const newCard = {
     id : id,
     title: postTitle.value,
     text: postText.value,
-    imgPath: postImg
+    imgPath: img()
   }
   fetch('https://us-central1-serviceworker-f7f4f.cloudfunctions.net/storePostData', {
     method: 'POST',
@@ -248,11 +261,22 @@ form.addEventListener('submit', function (e) {
     if('serviceWorker' in navigator && 'SyncManager' in window) {
       navigator.serviceWorker.ready
         .then(function (sw) {
+          let img = () => {
+            if(!postImg) {
+              if(!imgInput.value){
+                return 'https://firebasestorage.googleapis.com/v0/b/serviceworker-f7f4f.appspot.com/o/posts%2Fprincess.png?alt=media&token=22faf762-1fea-4551-b6c4-70061b041d81'
+              }else{
+                return imgInput.value
+              }
+            }else {
+              return postImg
+            }
+          }
           var post = {
             id: Date.now(),
             title: postTitle.value,
             text: postText.value,
-            imgPath:postImg
+            imgPath:img()
           }
           createCard(post)
           writeData('sync-posts', post)
