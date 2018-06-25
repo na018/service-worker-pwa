@@ -9,6 +9,7 @@ uploadFile.addEventListener('change', function (e) {
 
   fileReader.onload = (e) => {
     imgInput.value = newName
-    postImg = e.target.result
+    var ext = newName.split('.')[1]
+    postBlob = new Blob([e.target.result], { type: "image/"+ext })
   }
 })

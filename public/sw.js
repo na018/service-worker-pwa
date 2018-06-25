@@ -2,8 +2,8 @@ importScripts('/src/js/idb.js')
 importScripts('/src/js/utility.js')
 /*importScripts('/src/js/utility.js')*/
 
-let CACHE_STATIC_NAME = 'static-v2'
-let CACHE_DYNAMIC_NAME = 'dynamic-v2'
+let CACHE_STATIC_NAME = 'static-v5'
+let CACHE_DYNAMIC_NAME = 'dynamic-v5'
 var STATIC_FILES =
   ['/',
     '/index.html',

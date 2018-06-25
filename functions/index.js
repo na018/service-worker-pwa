@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -13,47 +14,78 @@ admin.initializeApp({
 var cors = require('cors')({ origin: true })
 var webpush = require('web-push');
 
+
+
+let upload = (imgName, imgBlob, cb) => {
+  var storageRef = admin.storage().ref('/posts' + '/'+imgName);
+  var uploadTask = storageRef.put(imgBlob)
+
+  uploadTask.on('state_changed', function (snapshot) {
+    // Observe state change events such as progress, pause, and resume
+    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    switch (snapshot.state) {
+      case admin.storage.TaskState.PAUSED: // or 'paused'
+        console.log('Upload is paused');
+        break;
+      case admin.storage.TaskState.RUNNING: // or 'running'
+        console.log('Upload is running');
+        break;
+    }
+  }, function (error) {
+    // Handle unsuccessful uploads
+  }, function () {
+    // Handle successful uploads on complete
+    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+      console.log('File available at', downloadURL);
+      cb(downloadURL)
+    })
+  })
+}
 exports.storePostData = functions.https.onRequest(function (request, response) {
   console.log(request.url)
+  console.log(request.body)
+  console.log('storePostData')
   cors(request, response, function () {
-    admin
-    .database()
-    .ref('posts')
-    .push({
-      id: request.body.id,
-      title: request.body.title,
-      text: request.body.text,
-      imgPath: request.body.imgPath,
-    })
-      .then(function () {
-        webpush.setVapidDetails('mailto:testmail@testmailcom.de','BDui3XmS-VxBFTLMxLK3GPgW0BIdJSVlvXQR-6v--kHisyNz2Os2hOZUVPIyrljgQ7CbZBAsNov1oUX9AsYVOLw','jkoneTbTLssrpyoTpbx1BYJCjkBHvhWMSY3wuAfdvjQ');
-        return admin.database().ref('subscription').once('value');
+    let imgPath = ""
+    if (request.body.postBlob) {
+      var storageRef = admin.storage().ref('/posts' + '/' + request.body.imgPath);
+      upload(storageRef, request.body.postBlob, function (imgName) {
+        imgPath = imgName
+        postData()
       })
-      .then(function (subscriptions) {
-        subscriptions.forEach(function (sub) {
-          var pushConfig = {
-            endpoint: sub.val().endpoint,
-            keys: {
-              auth: sub.val().keys.auth,
-              p256dh: sub.val().keys.p256dh
-            }
-          };
+    } else {
+      imgPath = request.body.imgPath
+      postData()
+    }
 
-          webpush.sendNotification(pushConfig, JSON.stringify({
-            title: 'New Post',
-            content: 'New Post added!',
-            openUrl: '/'
-          }))
-            .catch(function(err) {
-              console.log(err);
-            })
-        });
-        response.status(201).json({message: 'Data stored', id: request.body.id});
-      })
-      .catch(function (err) {
-        response.status(500).json({error: err});
-      });
-  });
+    let postData = () => {
+      console.log('Hello World')
+      console.log(imgPath)
+      admin
+        .database()
+        .ref('posts')
+        .push({
+          id: request.body.id,
+          title: request.body.title,
+          text: request.body.text,
+          imgPath: imgPath,
+        })
+        .then(() => {
+          response.status(201).json({
+            message: 'Data stored',
+            id: request.body.id,
+          })
+        })
+        .catch(err => {
+          response.status(500).json({
+            error: err,
+          })
+        })
+    }
+  })
 });
 
 exports.deletePostData = functions.https.onRequest((request, response) => {

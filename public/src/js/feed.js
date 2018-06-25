@@ -10,6 +10,7 @@ const imgContainer = createPostArea.querySelector('#manual-image')
 const uploadFile = imgContainer.querySelector('#imgPath-input')
 const imgInput = imgContainer.querySelector('#imgPath')
 let postImg = null //'gs://serviceworker-f7f4f.appspot.com/peach_small_1.jpg'
+let postBlob = null
 
 function openCreatePostModal() {
   createPostArea.style.transform = 'translateY(0)'
@@ -234,8 +235,10 @@ function sendData() {
     id : id,
     title: postTitle.value,
     text: postText.value,
-    imgPath: img()
+    imgPath: img(),
+    postBlob: postBlob
   }
+  console.log(newCard)
   fetch('https://us-central1-serviceworker-f7f4f.cloudfunctions.net/storePostData', {
     method: 'POST',
     headers: {
@@ -276,7 +279,8 @@ form.addEventListener('submit', function (e) {
             id: Date.now(),
             title: postTitle.value,
             text: postText.value,
-            imgPath:img()
+            imgPath:img(),
+            postBlob: postBlob
           }
           createCard(post)
           writeData('sync-posts', post)
