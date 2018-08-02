@@ -212,50 +212,55 @@ self.addEventListener('sync', function (event) {
 //
 //   }
 // });
+
+// was passiert bei click auf notification - wird von SW übernommen
+// da die Benachrichtung ein Feature des Browsers ist und der Service Worker im Hintergrund läuft
 self.addEventListener('notificationclick', function(event) {
-  var notification = event.notification;
-  var action = event.action;
+  var notification = event.notification; // welche Notification betrifft den click
+  var action = event.action; // was hat der Benutzer angeclickt
 
-  console.log(notification);
+  console.log(notification); // zeige notification
 
-  if (action === 'confirm') {
+  if (action === 'confirm') { // action die der user ausgwählt hat
     console.log('Confirm was chosen');
-    notification.close();
+    notification.close(); // schließen der Notification
   } else {
-    console.log(action);
-    event.waitUntil(
-      clients.matchAll()
-        .then(function(clis) {
-          var client = clis.find(function(c) {
-            return c.visibilityState === 'visible';
+    console.log(action); // zeige das cancel geklickt wurde
+    event.waitUntil(// sw warte bevor du mit etwas anderem weiter machst
+      clients.matchAll() // repräsentiert alle browser tasks welche zu diesem sw gehören
+        .then(function(cl){ // cl sind gefunde clients
+          var clientwin = cl.find(function(c){
+            return c.visibiltyState == 'visible';
           });
 
-          if (client !== undefined) {
-            client.navigate(notification.data.url);
-            client.focus();
+          if (clientwin !== undefined) {
+            console.log(notification.data)
+            clientwin.navigate(notification.data.url); // neuer tab
+            clientwin.focus(); // setze fokus auf fenster
           } else {
-            clients.openWindow(notification.data.url);
+            clients.openWindow(notification.data.url); // generell laden der page im browser falls dieser gar nicht offen ist
           }
-          notification.close();
         })
     );
   }
 });
+
+// was passiert wen user die notification nicht klickt sondern sie schließt/weg swiped?
 self.addEventListener('notificationclose', function(event) {
    console.log('notification was closed',event);
-
+   // gute Möglichkeit um Anlysen zu Notifications zu sammeln durch senden
  });
 
- self.addEventListener('push', function(event) {
-   console.log('Push Notification received', event);
+ self.addEventListener('push', function(event) { //wenn eine subscription vorhanden und eine push nachricht an url gesendet wurde kann diese hier abgefangen werden
+   console.log('Push Notification received', event); // anzeigen was im event vorhanden ist
 
-   var data = {title: 'New!', content: 'Something new happened!', openUrl: '/'};
+   var data = {title: 'New!', content: 'Dummy Push-Message!', openUrl: '/'}; // dummy objekt
 
-   if (event.data) {
-     data = JSON.parse(event.data.text());
+   if (event.data) { // wenn daten im event vorhanden
+     data = JSON.parse(event.data.text()); // nur den string als text in das data objekt speichern
    }
 
-   var options = {
+   var options = { // options der nachricht setzen, siehe auch notification optionen
      body: data.content,
      icon: '/src/images/icons/app-icon-96x96.png',
      badge: '/src/images/icons/app-icon-96x96.png',
@@ -264,8 +269,8 @@ self.addEventListener('notificationclose', function(event) {
      }
    };
 
-   event.waitUntil(
-     self.registration.showNotification(data.title, options)
+   event.waitUntil( // warte bis notification wirklich gezeiget werden kann
+     self.registration.showNotification(data.title, options) //zeige Notifcation mit optionen
    );
  });
 // network first then cache

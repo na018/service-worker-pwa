@@ -27,53 +27,52 @@ window.addEventListener('beforeinstallprompt', function(event) {
 function displayConfirmNotification() {
   if ('serviceWorker' in navigator) {
     var options = {
-      body: 'You successfully subscribed to our Notification service!',
+      body: 'You successfully subscribed to the Notification service!',
       icon: '/src/images/icons/app-icon-96x96.png',
       image: '/src/images/sf-boat.jpg',
-      dir: 'ltr',
-      lang: 'en-US', // BCP 47,
-      vibrate: [100, 50, 200],
-      badge: '/src/images/icons/app-icon-96x96.png',
-      tag: 'confirm-notification',
-      renotify: true,
-      actions: [
+      dir: 'ltr', // Ausrichtung des Texts left to right
+      lang: 'en-DE', // BCP 47 Kodierung
+      vibrate: [100, 50, 200], // Mobile Endgeräte in MS Vib-Dauer, pause, Vibrations
+      badge: '/src/images/icons/app-icon-96x96.png', // Android TopToolbar Icon
+      actions: [ // zusatz feature was passieren soll bei click auf notification mit buttons
         { action: 'confirm', title: 'Okay', icon: '/src/images/icons/app-icon-96x96.png' },
         { action: 'cancel', title: 'Cancel', icon: '/src/images/icons/app-icon-96x96.png' }
       ]
     };
 
-    navigator.serviceWorker.ready
-      .then(function(swreg) {
-        swreg.showNotification('Successfully subscribed!', options);
+    navigator.serviceWorker.ready // service worker ist bereit?
+      .then(function(swreg) { // wenn ja zeige Notication durch SW
+        swreg.showNotification('Successfully subscribed! from SW', options);
       });
   }
 }
 
 function configurePushSub() {
-  if (!('serviceWorker' in navigator)) {
+  if (!('serviceWorker' in navigator)) { // wenn kein sw vorhanden, nichts unternehmen!
     return;
   }
 
   var reg;
-  navigator.serviceWorker.ready
+  navigator.serviceWorker.ready // ist sw bereit?
     .then(function(swreg) {
       reg = swreg;
-      return swreg.pushManager.getSubscription();
+      return swreg.pushManager.getSubscription(); //liefert subscription
     })
     .then(function(sub) {
-      if (sub === null) {
-        // Create a new subscription
+      if (sub === null) { // wenn keine subcription vorhanden, weiter und eine anlegen
+        // vapid Keys definieren für PK Verfahren (zuvor durch web-push package generiert und kopiert!)
         var vapidPublicKey = 'BDui3XmS-VxBFTLMxLK3GPgW0BIdJSVlvXQR-6v--kHisyNz2Os2hOZUVPIyrljgQ7CbZBAsNov1oUX9AsYVOLw';
-        var convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);
+        var convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey); // Hilfsfunktion zum konvertieren des URLb64Keys in int8Array
         return reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: convertedVapidPublicKey
+          applicationServerKey: convertedVapidPublicKey // subscription des endgeräts
         });
       } else {
-        // We have a subscription
+        // subscription ist bereits vorhanden.
+        console.log('Subscription is allready there:', sub);
       }
     })
-    .then(function(newSub) {
+    .then(function(newSub) { // subscription muss an Firebase Backend gesendet und gespeichert werden durch POST
       return fetch('https://serviceworker-f7f4f.firebaseio.com/subscription.json', {
         method: 'POST',
         headers: {
@@ -83,12 +82,12 @@ function configurePushSub() {
         body: JSON.stringify(newSub)
       })
     })
-    .then(function(res) {
+    .then(function(res) { // hat es geklappt im backend zu speichern?
       if (res.ok) {
         displayConfirmNotification();
       }
     })
-    .catch(function(err) {
+    .catch(function(err) { // wenn irgendein Fehler in dieser Funktion auftaucht, hier anzeigen
       console.log(err);
     });
 }
@@ -99,8 +98,7 @@ function askForNotificationPermission() {
     if (result !== 'granted') {
       console.log('No notification permission granted!');
     } else {
-      configurePushSub();
-      // displayConfirmNotification();
+      configurePushSub(); // Benutzer hat Genehmigung für Notifications erteilt und wird darauf vorbereitet auch Push-Nachrichten empfangen zu können (später dazu mehr)
     }
   });
 }

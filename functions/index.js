@@ -11,9 +11,9 @@ admin.initializeApp({
   databaseURL: "https://serviceworker-f7f4f.firebaseio.com"
 });
 var cors = require('cors')({ origin: true })
-var webpush = require('web-push');
+var webpush = require('web-push'); // benötigt um mit vapid-key Verfahren Nachrichten senden zu können
 
-exports.storePostData = functions.https.onRequest(function (request, response) {
+exports.storePostData = functions.https.onRequest(function (request, response) { // Funktion welche aufgerufen wird, sobald ein Upload durch ein Benutzer veranlasst wird
   console.log(request.url)
   cors(request, response, function () {
     admin
@@ -25,14 +25,14 @@ exports.storePostData = functions.https.onRequest(function (request, response) {
       text: request.body.text,
       imgPath: request.body.imgPath,
     })
-      .then(function () {
+      .then(function () { // Vapid Private Key hinterlegen damit Server Nachrichten an Subscriptions senden zu dürfen
         webpush.setVapidDetails('mailto:testmail@testmailcom.de','BDui3XmS-VxBFTLMxLK3GPgW0BIdJSVlvXQR-6v--kHisyNz2Os2hOZUVPIyrljgQ7CbZBAsNov1oUX9AsYVOLw','jkoneTbTLssrpyoTpbx1BYJCjkBHvhWMSY3wuAfdvjQ');
-        return admin.database().ref('subscription').once('value');
+        return admin.database().ref('subscription').once('value'); // db abfrage um subscriptions abzugreifen
       })
-      .then(function (subscriptions) {
-        subscriptions.forEach(function (sub) {
-          var pushConfig = {
-            endpoint: sub.val().endpoint,
+      .then(function (subscriptions) { // alle vorhandenen subscriptions des backends
+        subscriptions.forEach(function (sub) { // aufbereiten der notwendingen geschachtelten elemente
+          var pushConfig = { // Web-Push Config Objekt anlegen mit dem Push-Nachricht später versendet  wird
+            endpoint: sub.val().endpoint, //Push-Server URL der Browser-Hersteller speichern
             keys: {
               auth: sub.val().keys.auth,
               p256dh: sub.val().keys.p256dh
@@ -40,11 +40,11 @@ exports.storePostData = functions.https.onRequest(function (request, response) {
           };
 
           webpush.sendNotification(pushConfig, JSON.stringify({
-            title: 'New Post',
-            content: 'New Post added!',
-            openUrl: '/'
-          }))
-            .catch(function(err) {
+            title: 'New Image Upload',
+            content: 'Hi, it seems there is a new image in the example app',
+            openUrl: '/' // welche url soll göffnet werden?
+          })) // web-push config mit geben + Push-Notification Payload der Nachricht
+            .catch(function(err) { // Fehler anzeigen wenn vorhanden
               console.log(err);
             })
         });
